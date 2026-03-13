@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.counterapp.ui.theme.CounterAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,22 +32,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: CounterViewModel = viewModel()
             CounterAppTheme {
-                TheCounterApp()
+                TheCounterApp(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun TheCounterApp(){
-    val count = remember { mutableStateOf(0 ) }
-    fun increment(){
-        count.value++
-    }
-    fun decrement(){
-        count.value--
-    }
+fun TheCounterApp(viewModel: CounterViewModel){
+
     Scaffold ( modifier = Modifier.fillMaxSize())
     { innerPadding ->
        Column (modifier = Modifier
@@ -55,7 +52,7 @@ fun TheCounterApp(){
            horizontalAlignment = Alignment.CenterHorizontally
        ){
            Text(
-               "Count ${count.value } ",
+               "Count: ${viewModel.count.value } ",
                fontSize = 24.sp,
                fontWeight = FontWeight.Bold
 
@@ -63,10 +60,10 @@ fun TheCounterApp(){
            Spacer(modifier = Modifier.height(16.dp))
 
            Row() {
-               Button(onClick = {increment()}) {
+               Button(onClick = {viewModel.increment()}) {
                    Text("Increment")
                }
-               Button(onClick = {decrement()}) {
+               Button(onClick = {viewModel.decrement()}) {
                    Text("Decrement")
                }
            }
